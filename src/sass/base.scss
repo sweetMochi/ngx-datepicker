@@ -1,0 +1,138 @@
+
+/*
+	REF
+	https://medium.com/@elad/normalize-css-or-css-reset-9d75175c5d1e
+*/
+
+html,
+body {
+	@media #{$view-l--max} {
+		overflow-x: hidden;
+	}
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+	cursor: pointer;
+}
+
+button {
+	background-color:transparent;
+	color: inherit;
+	border-width: 0;
+	padding: 0;
+	cursor: pointer;
+}
+
+ul,
+ol,
+dd {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin:0;
+	font-size: inherit;
+	font-weight: inherit;
+}
+
+p {
+	margin:0;
+}
+
+fieldset {
+	border-width: 0;
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	color: $gc-dark;
+	font-size: $fz-p;
+	line-height: $line-height;
+}
+
+select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	outline: 0;
+	font-family: $font-family;
+	text-transform: capitalize;
+	background-color: transparent;
+
+	&::-ms-expand {
+		display: none;
+	}
+}
+
+// 數字欄位增減數值按鈕
+[type=number]::-webkit-inner-spin-button,
+[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+}
+[type=number] {
+	-moz-appearance: textfield;
+}
+
+// 日期欄位隱藏原生月曆箭頭與增減值功能
+[type=date] {
+
+	-webkit-appearance: none;
+
+	&::-webkit-outer-spin-button,
+	&::-webkit-outer-spin-button,
+	&::-webkit-calendar-picker-indicator {
+		-webkit-appearance: none;
+		display: none;
+	}
+}
+
+
+[type="file"] {
+	&::-webkit-file-upload-button {
+		-webkit-appearance: none;
+		border: 0;
+		width: 0;
+		height: 0;
+		padding: 0;
+	}
+}
+
+
+input {
+	font-family: $font-family;
+}
+
+button {
+	outline: 0;
+	border: 0;
+	padding: 0;
+	cursor: pointer;
+	font-family: $font-family;
+	vertical-align: baseline;
+	text-align: center;
+	color: inherit;
+	line-height: $line-height;
+	background-color: transparent;
+
+	&:active {
+		border-color: transparent;
+	}
+
+	// Focus 邊框移除
+	&::-moz-focus-inner {
+		border: 0;
+	}
+}
+
+[tabindex] {
+	outline: none
+}

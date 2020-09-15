@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+$fa-font-path: "/assets/fonts";
+
+@import "~normalize.css/normalize.css";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/regular.scss";
+@import "~@fortawesome/fontawesome-free/scss/solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
+
+// 通用設定
+@import "sass/set.scss";
+@import "sass/base.scss";
