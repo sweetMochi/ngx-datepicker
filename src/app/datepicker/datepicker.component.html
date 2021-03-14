@@ -1,0 +1,80 @@
+<div class="datepicker" [class.datepicker-hide]="!show || ( show && !top && !left )">
+	<div class="datepicker-wrap">
+		<div
+			class="datepicker-mask"
+			(click)="show = false"
+		></div>
+		<div
+			#panel
+			(window:resize)="onResize()"
+			class="datepicker-panel"
+			[style.top.px]="top"
+			[style.left.px]="left"
+			><div class="datepicker-panel-wrap">
+				<div class="datepicker-panel-header">
+					<div class="datepicker-select">
+						<select
+							[(ngModel)]="year"
+							(change)="changeYear()"
+							><option
+								*ngFor="let option of selectYear"
+								[value]="option.val"
+								[textContent]="option.title"
+							></option>
+						</select><b></b>
+						<span [textContent]="year"></span>
+					</div>
+					<div class="datepicker-select">
+						<select
+							[(ngModel)]="month"
+							(change)="changeMonth()"
+							><option
+								*ngFor="let option of selectMonth"
+								[value]="option.val"
+								[textContent]="option.title"
+							></option>
+						</select><b></b>
+						<span [textContent]="month + 1"></span>
+					</div>
+					<button class="datepicker-select" (click)="clear()">
+						<i class="fas fa-times"></i>
+					</button>
+				</div>
+				<div class="datepicker-panel-body">
+					<button
+						class="datepicker-btn datepicker-btn-prev"
+						(click)="changeMonth(-1)"
+						><i class="fas fa-chevron-left"></i>
+					</button>
+					<button
+						class="datepicker-btn datepicker-btn-next"
+						(click)="changeMonth(1)"
+						><i class="fas fa-chevron-right"></i>
+					</button>
+					<table>
+						<thead>
+							<tr>
+								<th *ngFor="let th of week" [textContent]="th"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<ng-container
+								*ngFor="let td of seeDate; let i = index"
+								><tr *ngIf="i % 7 === 0">
+									<td
+										*ngFor="let n of [0,1,2,3,4,5,6]"
+										[class.datepicker-date-out]="seeDate[ i + n ].out"
+										[class.datepicker-date-off]="seeDate[ i + n ].off"
+										[class.datepicker-date-sdate]="seeDate[ i + n ].sdate"
+										[textContent]="seeDate[ i + n ].d"
+										(click)="pick(seeDate[ i + n ].off ? null : seeDate[ i + n ].date)"
+									></td>
+								</tr>
+							</ng-container>
+						<tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

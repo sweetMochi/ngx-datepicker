@@ -1,17 +1,12 @@
-import {
-	Injectable,
-	EventEmitter
-} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { formatDate } from '@angular/common';
-import { AbstractControl, NgModel, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 
 // 功能資源
-import { DateService } from '../../@sup/date.service';
 import { DatepickerUnit, DatepickerBoot, DatepickerSelectOption } from './datepicker';
 import { DATEPICKER_YEAR_RANGE } from './datepicker';
-import { DATE_FORMATE, DATE_LOCALE } from '../../@set/set.const';
+import { DATE_FORMATE, DATE_LOCALE } from 'src/app/@set/set.const';
 
 
 /**
@@ -39,11 +34,11 @@ export class DatepickerService {
 
 	/**
 	 * 判斷當前日期是否超出範圍 (可以等於當前日期)
-	 * @param [now] 當前日期
-	 * @param [min] 最小日期
-	 * @param [max] 最大日期
+	 * @param now 當前日期
+	 * @param min 最小日期
+	 * @param max 最大日期
 	 */
-	dayOff(now: Date, min: Date, max: Date): boolean {
+	dayOff( now: Date, min: Date, max: Date ): boolean {
 		// 如果未傳入日期
 		if ( !now ) {
 			return false;
@@ -62,11 +57,11 @@ export class DatepickerService {
 
 
 	/**
-	 * [F] 更新月曆
-	 * @param [start] 當前日期
-	 * @param [view] 檢視日期
-	 * @param [min] 最小日期
-	 * @param [max] 最大日期
+	 * 更新月曆
+	 * @param start 當前日期
+	 * @param view 檢視日期
+	 * @param min 最小日期
+	 * @param max 最大日期
 	 */
 	update( start: string[], view: Date, min?: Date, max?: Date ): DatepickerUnit[] {
 
@@ -167,26 +162,50 @@ export class DatepickerService {
 
 	/**
 	 * 年份範圍
-	 * @param [dateMin] 最小日期
-	 * @param [dateMax] 最大日期
+	 * @param dateMin 最小日期
+	 * @param dateMax 最大日期
 	 */
 	yearRange( dateMin?: Date, dateMax?: Date ): DatepickerSelectOption[] {
 
 		// 年份重置
 		const selectYear: DatepickerSelectOption[] = [];
+		// 預設最大日期
+		const maxYear = this.date.getFullYear() + DATEPICKER_YEAR_RANGE;
 
-		// 如果有最小日期，限制年份選單
-		const min = dateMin ? dateMin.getFullYear() - this.date.getFullYear() : 0 - DATEPICKER_YEAR_RANGE;
+		let min = this.date.getFullYear();
+		let max = maxYear;
 
-		// 如果有最大日期，限制年份選單
-		const max = dateMax ? dateMax.getFullYear() - this.date.getFullYear() : DATEPICKER_YEAR_RANGE;
+		// 如果有指定最大和最小日期
+		if ( dateMin && dateMax ) {
+			min = dateMin.getFullYear();
+			max = this.date.getFullYear();
+		} else {
+
+			// 如果只有最小日期
+			if ( dateMin ) {
+				// 檢查是否為過去的日期
+				min = dateMin.getFullYear() - this.date.getFullYear() > 0 ? dateMin.getFullYear() : this.date.getFullYear();
+				// 換算最大日期
+				max = min + DATEPICKER_YEAR_RANGE;
+			}
+
+			// 如果只有最大日期
+			if ( dateMax ) {
+				// 檢查是否為過去的日期
+				max = dateMax.getFullYear() - this.date.getFullYear() > 0 ? dateMax.getFullYear() : maxYear;
+				// 換算最小日期
+				min = max - DATEPICKER_YEAR_RANGE;
+			}
+
+		}
+
 
 		// 產生年份選單
-		for (let i = min; i <= max; i++) {
+		for (let i = min; i < max; i++) {
 			selectYear.push(
 				new DatepickerSelectOption(
-					this.date.getFullYear() + i,
-					(this.date.getFullYear() + i).toString()
+					i,
+					i.toString()
 				)
 			);
 		}
@@ -205,50 +224,6 @@ export class DatepickerService {
 				( i + 1 ).toString()
 			);
 		});
-	}
-
-
-	/**
-	 * [F] 驗證流程 (未使用)
-	 * @param [date] 日期
-	 */
-	validator(
-		date: NgModel,
-		min: string,
-		max: string,
-		dateService: DateService
-		): ValidatorFn {
-		return (control: AbstractControl): ValidationErrors => {
-
-			// 輸入為正確的日期格式
-			if ( dateService.isDate(date.value) ) {
-
-				// 如果有設定最小日期
-				if ( min ) {
-					// 如果輸入日期小於「最小日期」
-					if ( new Date(date.value) < new Date(min) ) {
-						// 設定「最小日期」驗證未通過
-						return { min };
-					}
-				}
-
-				// 如果有設定最大日期
-				if ( max ) {
-					// 如果輸入日期大於「最大日期」
-					if ( new Date(date.value) > new Date(max) ) {
-						// 設定「最大日期」驗證未通過
-						return { max };
-					}
-				}
-
-				// 驗證通過
-				return null;
-
-			} else {
-				// 設定驗證不通過
-				return { date: false };
-			}
-		};
 	}
 
 }

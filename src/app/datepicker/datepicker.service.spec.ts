@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { DatepickerService } from './datepicker.service';
 import { DATEPICKER_YEAR_RANGE, DatepickerSelectOption, DatepickerUnit } from './datepicker';
 
-fdescribe('DatepickerService', () => {
+describe('DatepickerService', () => {
 	let service: DatepickerService;
 
 	beforeEach(() => {
@@ -125,19 +125,19 @@ fdescribe('DatepickerService', () => {
 		it('year list check', () => {
 			years = service.yearRange();
 			// list contain past 10 years and next 10 years from now
-			expect(years.length).toEqual(DATEPICKER_YEAR_RANGE * 2 + 1);
+			expect(years.length).toEqual(DATEPICKER_YEAR_RANGE);
 			// check year list form start to end
 			expect(years.every( ( year, i ) => {
 				// first item should be 10 years ago
-				return year.val === new Date().getFullYear() - DATEPICKER_YEAR_RANGE + i;
+				return year.val === new Date().getFullYear() + i;
 			})).toBeTrue();
 		});
 
 
 		it('limited year range with min value', () => {
-			years = service.yearRange(new Date(select));
+			years = service.yearRange(new Date());
 			// list contain next 10 years
-			expect(years.length).toEqual(DATEPICKER_YEAR_RANGE + 1);
+			expect(years.length).toEqual(DATEPICKER_YEAR_RANGE);
 			// check year list form start to end
 			expect(years.every( ( year, i ) => {
 				// first item should be this year
@@ -147,13 +147,13 @@ fdescribe('DatepickerService', () => {
 
 
 		it('limited year range with max value', () => {
-			years = service.yearRange(null, new Date(select));
+			years = service.yearRange(null, new Date());
 			// list contain past 10 years and self
-			expect(years.length).toEqual(DATEPICKER_YEAR_RANGE + 1);
+			expect(years.length).toEqual(DATEPICKER_YEAR_RANGE);
 			// check year list form start to end
 			expect(years.every( ( year, i ) => {
 				// first item should be this year
-				return year.val === new Date().getFullYear() - DATEPICKER_YEAR_RANGE + i;
+				return year.val === new Date().getFullYear() + i;
 			})).toBeTrue();
 		});
 	});

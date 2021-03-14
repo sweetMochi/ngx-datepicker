@@ -1,22 +1,25 @@
 import { Component, EventEmitter, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, Event, NavigationEnd } from '@angular/router';
-import { formatDate } from '@angular/common';
 import { NgModel } from '@angular/forms';
 
 // 功能資源
-import { DateService } from '../../@sup/date.service';
+import { DateService } from 'src/app/@sup/date.service';
 import { DatepickerService } from './datepicker.service';
 import { DatepickerBoot, DatepickerSelectOption, DatepickerUnit } from './datepicker';
-import { DATE_FORMATE } from '../../@set/set.const';
 import { DATEPICKER_WEEK_ABBR } from './datepicker';
+import { MOBILE_WIDTH } from '../@set/set.const';
 
+
+/**
+ * 小月曆本體
+ */
 @Component({
 	selector: 'app-datepicker',
 	templateUrl: './datepicker.component.html',
-	styleUrls: ['./datepicker.component.scss']
+	styleUrls: ['./datepicker.component.less']
 })
 export class DatepickerComponent implements OnInit {
-	@ViewChild('panel', { static: false }) public panel: ElementRef;
+	@ViewChild('panel') public panel: ElementRef;
 
 	/** 是否開啟 */
 	private active: boolean;
@@ -130,7 +133,7 @@ export class DatepickerComponent implements OnInit {
 
 
 	/**
-	 * [F] 更新月曆
+	 * 更新月曆
 	 */
 	update(): void {
 		this.year = this.date.getFullYear();
@@ -140,7 +143,7 @@ export class DatepickerComponent implements OnInit {
 
 
 	/**
-	 * [F] 小月曆定位計算
+	 * 小月曆定位計算
 	 */
 	rect(): void {
 		if ( this.input ) {
@@ -152,8 +155,10 @@ export class DatepickerComponent implements OnInit {
 			const panel = this.panel.nativeElement as HTMLElement;
 			// 在月曆顯示後更新高度資料
 			const datepicker = panel.getBoundingClientRect();
+
 			// 日曆 X 座標
 			this.left = rect.left;
+
 			// 超過螢幕高度，則改為往上彈出
 			if ( ( rect.top + rect.height ) > ( window.innerHeight / 2 ) ) {
 				// 更新顯示位置為輸入框向上彈出
@@ -162,15 +167,42 @@ export class DatepickerComponent implements OnInit {
 				// 維度：輸入框高度、輸入框 Y 軸座標、捲動距離
 				this.top = rect.top + rect.height + window.pageYOffset;
 			}
+
+		// 如果是桌機版
+		if ( window.innerWidth > MOBILE_WIDTH ) {
+
+			// 預設值
+			this.left = rect.left;
+
+			// 如果有載入資料後寬度的 HTML
+			if ( panel ) {
+
+				const width = panel.getBoundingClientRect().width;
+
+				// 如果超出顯示範圍
+				if ( rect.left + width > window.innerWidth ) {
+					// 減去自己的寬度
+					this.left = rect.left - width + rect.width;
+				}
+
+			}
+
+		} else {
+			// 手機版不使用 X 定位
+			this.left = null;
+		}
+
+
+
 		}
 	}
 
 
 	/**
 	 * [E] 傳遞日期參數
-	 * @param [sdate] 開始日期
+	 * @param sdate 開始日期
 	 */
-	pick(sdate: string): void {
+	pick( sdate: string ): void {
 
 		// 驗證日期格式
 		if ( this.dateService.isDate(sdate) ) {
@@ -200,8 +232,8 @@ export class DatepickerComponent implements OnInit {
 
 
 	/**
-	 * [F] 月曆是否顯示
-	 * @param [active] 是否顯示
+	 * 月曆是否顯示
+	 * @param active 是否顯示
 	 */
 	set show( active: boolean ) {
 		// 顯示狀態
@@ -213,7 +245,7 @@ export class DatepickerComponent implements OnInit {
 
 
 	/**
-	 * [F] 變更年份
+	 * 變更年份
 	 */
 	changeYear() {
 		this.date.setFullYear(this.year);
@@ -222,10 +254,10 @@ export class DatepickerComponent implements OnInit {
 
 
 	/**
-	 * [F] 變更月份
-	 * @param [m] 月份往前/往後
+	 * 變更月份
+	 * @param m 月份往前/往後
 	 */
-	changeMonth(m?: number) {
+	changeMonth( m?: number ) {
 		// 如果有傳入往前或後
 		// 將往前或往後的值加到當前的月份
 		// 如果沒有輸入，則取當前選取的月份
@@ -236,7 +268,7 @@ export class DatepickerComponent implements OnInit {
 
 
 	/**
-	 * [F] 清除當前日期
+	 * 清除當前日期
 	 */
 	clear() {
 		// 清空當前日期
@@ -281,7 +313,7 @@ export class DatepickerComponent implements OnInit {
 		// [E] 路由事件
 		this.router.events.subscribe((event: Event) => {
 			// 導向完成：Route 為跳轉後頁面
-			if (event instanceof NavigationEnd) {
+			if ( event instanceof NavigationEnd ) {
 				// 隱藏選擇日期功能
 				this.show = false;
 			}

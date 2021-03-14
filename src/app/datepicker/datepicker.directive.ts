@@ -1,9 +1,9 @@
 import { HostBinding, Input, Output, Directive, HostListener, EventEmitter } from '@angular/core';
-import { NgModel, AbstractControl, Validator, ValidationErrors } from '@angular/forms';
+import { NgModel } from '@angular/forms';
 
 
 // 功能資源
-import { DateService } from '../../@sup/date.service';
+import { DateService } from 'src/app/@sup/date.service';
 import { DatepickerBoot } from './datepicker';
 import { DatepickerService } from './datepicker.service';
 
@@ -56,6 +56,7 @@ export class DatepickerDirective {
 	@HostListener('focus', ['$event'])
 	init(event: FocusEvent): void {
 
+		// 檢查 input type
 		if ( this.type !== 'date' ) {
 			console.log('[Datepicker] Datepicker need "date" type input.');
 			return;
@@ -83,13 +84,15 @@ export class DatepickerDirective {
 		const target = event.target as HTMLInputElement;
 
 		// 小月曆傳入值
-		this.datepicker.init.next(new DatepickerBoot(
-			this.name,
-			target,
-			this.ngModel,
-			this.min,
-			this.max,
-			this.action
-		));
+		this.datepicker.init.next(
+			new DatepickerBoot(
+				this.name,
+				target,
+				this.ngModel,
+				this.min,
+				this.max,
+				this.action
+			)
+		);
 	}
 }

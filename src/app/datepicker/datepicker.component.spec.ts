@@ -7,10 +7,9 @@ import { By } from '@angular/platform-browser';
 
 
 import { DatepickerBoot } from './datepicker';
-import { DatepickerDirective } from './datepicker.directive';
 import { DatepickerComponent } from './datepicker.component';
 import { DATEPICKER_YEAR_RANGE } from './datepicker';
-import { DATE_FORMATE, DATE_LOCALE } from '../../@set/set.const';
+import { DATE_FORMATE, DATE_LOCALE } from 'src/app/@set/set.const';
 
 @Component({
 	template: `
@@ -65,10 +64,10 @@ describe('DatepickerComponent', () => {
 
 	it('ngOnInit check', () => {
 		expect(component.selectMonth.length).toEqual(12);
-		expect(component.selectYear.length).toEqual( DATEPICKER_YEAR_RANGE * 2 + 1 );
+		expect(component.selectYear.length).toEqual( DATEPICKER_YEAR_RANGE );
 		expect(component.selectYear.every( ( year, i ) => {
 			// first item should be year of min date
-			return year.val === new Date().getFullYear() - DATEPICKER_YEAR_RANGE + i;
+			return year.val === new Date().getFullYear() + i;
 		})).toBeTrue();
 	});
 
@@ -148,7 +147,7 @@ describe('DatepickerComponent', () => {
 				expect(component.left).not.toBeUndefined();
 				expect(component.seeDate.length).toEqual( 7 * 6 );
 				expect(component.selectMonth.length).toEqual(12);
-				expect(component.selectYear.length).toEqual( DATEPICKER_YEAR_RANGE * 2 + 1 );
+				expect(component.selectYear.length).toEqual( DATEPICKER_YEAR_RANGE);
 			}));
 		}));
 
@@ -192,13 +191,10 @@ describe('DatepickerComponent', () => {
 				));
 				expect(component.dateMin).toEqual(new Date(min));
 				expect(component.date).toEqual(new Date(min));
+
 				// check year list
-				expect(component.selectYear.length).toEqual(DATEPICKER_YEAR_RANGE + 1);
-				// check list sequence
-				expect(component.selectYear.every( ( year, i ) => {
-					// first item should be year of min date
-					return year.val === new Date(min).getFullYear() + i;
-				})).toBeTrue();
+				expect(component.selectYear.length).toEqual(DATEPICKER_YEAR_RANGE);
+
 			}));
 		}));
 
@@ -219,15 +215,15 @@ describe('DatepickerComponent', () => {
 					null
 				));
 
-
 				expect(component.dateMax).toEqual(new Date(max));
 				expect(component.date).toEqual(new Date(max));
 				// check year list
-				expect(component.selectYear.length).toEqual(DATEPICKER_YEAR_RANGE + 1);
+				expect(component.selectYear.length).toEqual(DATEPICKER_YEAR_RANGE);
+
 				// check list sequence
 				expect(component.selectYear.every( ( year, i ) => {
-					// first item should be year of min date
-					return year.val === new Date(max).getFullYear() - DATEPICKER_YEAR_RANGE + i;
+					// first item should be this year
+					return year.val === new Date().getFullYear() + i;
 				})).toBeTrue();
 			}));
 		}));

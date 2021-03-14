@@ -2,8 +2,9 @@ import { DatepickerDirective } from './datepicker.directive';
 import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { DatepickerBoot } from './datepicker';
+import { DatepickerComponent } from './datepicker.component';
 
 @Component({
 	template: `
@@ -80,7 +81,7 @@ describe('DatepickerDirective', () => {
 		const date = '2020-06-06';
 		directive = debug[4].injector.get(DatepickerDirective);
 		spyOn(directive.action, 'emit');
-		spyOn(component, 'testAction');
+		directive.action.emit(date);
 		expect(directive.action.emit).toHaveBeenCalledWith(date);
 	});
 

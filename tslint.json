@@ -24,9 +24,7 @@
     "import-spacing": true,
     "indent": {
       "options": [
-        true,
-        "tabs",
-        4
+        "spaces"
       ]
     },
     "max-classes-per-file": false,

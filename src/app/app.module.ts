@@ -1,18 +1,19 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
-import { DatepickerComponent } from './@view/datepicker/datepicker.component';
-import { DatepickerDirective } from './@view/datepicker/datepicker.directive';
+import { DatepickerComponent } from './datepicker/datepicker.component';
+import { DatepickerDirective } from './datepicker/datepicker.directive';
 
 
 @NgModule({
 	declarations: [
 		AppComponent,
-		DatepickerDirective,
-		DatepickerComponent
+		DatepickerComponent,
+		DatepickerDirective
 	],
 	imports: [
 		FormsModule,
