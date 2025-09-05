@@ -43,7 +43,7 @@ export class DateService {
 		// then 'yyyy-MM-dd' will be used
 		// stackoverflow.com/questions/52606333/how-i-can-create-angular-custom-date-pipe
 		// stackoverflow.com/questions/206384/how-do-i-format-a-microsoft-json-date
-		return date ? parseInt(date.substr(6), 10).toString() : null;
+		return date ? parseInt(date.substr(6), 10).toString() : '';
 	}
 
 
@@ -55,7 +55,7 @@ export class DateService {
 	format( jsondate: string, type: DateFormate ): string {
 
 		// 回傳日期
-		let date = null;
+		let date = '';
 
 		// 如果有「傳入日期」和「格式化類型」
 		if ( jsondate ) {

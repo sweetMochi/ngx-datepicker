@@ -6,7 +6,7 @@ import { formatDate } from '@angular/common';
 // 功能資源
 import { DatepickerUnit, DatepickerBoot, DatepickerSelectOption } from './datepicker';
 import { DATEPICKER_YEAR_RANGE } from './datepicker';
-import { DATE_FORMATE, DATE_LOCALE } from 'src/app/@set/set.const';
+import { DATE_FORMATE, DATE_LOCALE } from '../@set/set.const';
 
 
 /**
@@ -38,13 +38,11 @@ export class DatepickerService {
 	 * @param min 最小日期
 	 * @param max 最大日期
 	 */
-	dayOff( now: Date, min: Date, max: Date ): boolean {
-		// 如果未傳入日期
-		if ( !now ) {
-			return false;
-		}
+	dayOff( now: Date, min: Date | null = null, max: Date | null = null ): boolean {
+
 		// 當前日期基準
 		const nowDate = new Date(now.getTime()).setHours(0, 0, 0, 0);
+
 		// 任一條件超出範圍，則返回 true
 		return (
 			// 如果有最小日期，則進行比較
@@ -63,7 +61,7 @@ export class DatepickerService {
 	 * @param min 最小日期
 	 * @param max 最大日期
 	 */
-	update( start: string[], view: Date, min?: Date, max?: Date ): DatepickerUnit[] {
+	update( start: string[], view: Date, min: Date | null = null, max: Date | null = null ): DatepickerUnit[] {
 
 		// 選取日期預設值
 		start = start ? start : [];
@@ -165,7 +163,7 @@ export class DatepickerService {
 	 * @param dateMin 最小日期
 	 * @param dateMax 最大日期
 	 */
-	yearRange( dateMin?: Date, dateMax?: Date ): DatepickerSelectOption[] {
+	yearRange( dateMin: Date | null = null, dateMax: Date | null = null ): DatepickerSelectOption[] {
 
 		// 年份重置
 		const selectYear: DatepickerSelectOption[] = [];

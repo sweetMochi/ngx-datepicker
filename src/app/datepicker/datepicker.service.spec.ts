@@ -8,7 +8,7 @@ describe('DatepickerService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({});
-		service = TestBed.get(DatepickerService);
+		service = TestBed.inject(DatepickerService);
 	});
 
 	describe('dayOff()', () => {
@@ -31,14 +31,15 @@ describe('DatepickerService', () => {
 			expect(service.dayOff( now, null , min )).toBeTrue();
 		});
 
-		it('date or min or max is null', () => {
-			expect(service.dayOff( null, null , null )).toBeFalse();
-			expect(service.dayOff( null, min , max )).toBeFalse();
-			expect(service.dayOff( null, null , max )).toBeFalse();
-			expect(service.dayOff( null, min , null )).toBeFalse();
-			expect(service.dayOff( null, max , null )).toBeFalse();
-			expect(service.dayOff( null, null , min )).toBeFalse();
+		it('date min or date max is null', () => {
+			expect(service.dayOff( new Date(), null , null )).toBeFalse();
+			expect(service.dayOff( new Date(), min , max )).withContext('new Date(), min , max').toBeFalse();
+			expect(service.dayOff( new Date(), null , max )).withContext('new Date(), null , max').toBeFalse();
+			expect(service.dayOff( new Date(), min , null )).withContext('new Date(), min , null').toBeFalse();
+			expect(service.dayOff( new Date(), max , null )).withContext('new Date(), max , null').toBeTrue();
+			expect(service.dayOff( new Date(), null , min )).withContext('new Date(), null , min').toBeTrue();
 		});
+
 	});
 
 
@@ -73,11 +74,11 @@ describe('DatepickerService', () => {
 			const day = new Date(view).getDay();
 
 			expect(datepicker.filter( item => item.date === select && item.sdate ).length).toEqual(1);
-			expect(date.y).toEqual(new Date(select).getFullYear());
-			expect(date.m).toEqual(new Date(select).getMonth() + 1);
-			expect(date.d).toEqual(new Date(select).getDate());
-			expect(date.off).toBeFalse();
-			expect(date.out).toBeFalse();
+			expect(date?.y).toEqual(new Date(select).getFullYear());
+			expect(date?.m).toEqual(new Date(select).getMonth() + 1);
+			expect(date?.d).toEqual(new Date(select).getDate());
+			expect(date?.off).toBeFalse();
+			expect(date?.out).toBeFalse();
 		});
 
 
@@ -111,7 +112,7 @@ describe('DatepickerService', () => {
 
 
 		it('select date is null', () => {
-			const empty = service.update(null, new Date(view));
+			const empty = service.update([], new Date(view));
 			expect(datepicker.length).toEqual(42);
 		});
 

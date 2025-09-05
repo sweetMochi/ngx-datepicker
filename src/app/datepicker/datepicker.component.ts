@@ -1,13 +1,13 @@
 import { Component, EventEmitter, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, Event, NavigationEnd } from '@angular/router';
-import { NgModel } from '@angular/forms';
+import { FormsModule, NgModel } from '@angular/forms';
 
 // 功能資源
-import { DateService } from 'src/app/@sup/date.service';
 import { DatepickerService } from './datepicker.service';
 import { DatepickerBoot, DatepickerSelectOption, DatepickerUnit } from './datepicker';
 import { DATEPICKER_WEEK_ABBR } from './datepicker';
 import { MOBILE_WIDTH } from '../@set/set.const';
+import { DateService } from '../@sup/date.service';
 
 
 /**
@@ -15,26 +15,29 @@ import { MOBILE_WIDTH } from '../@set/set.const';
  */
 @Component({
 	selector: 'app-datepicker',
+    imports: [
+        FormsModule
+    ],
 	templateUrl: './datepicker.component.html',
 	styleUrls: ['./datepicker.component.less']
 })
 export class DatepickerComponent implements OnInit {
-	@ViewChild('panel') public panel: ElementRef;
+	@ViewChild('panel', { static: true}) public panel!: ElementRef;
 
 	/** 是否開啟 */
-	private active: boolean;
+	private active = false;
 
 	/** 更新對象 */
-	ngModel: NgModel;
+	ngModel: NgModel | null = null;
 
 	/** 月曆每日資訊 */
 	seeDate: DatepickerUnit[] = [];
 
 	/** 當前年份 */
-	year: number;
+	year = 0;
 
 	/** 當前月份 */
-	month: number;
+	month = 0;
 
 	/** 年份選擇 */
 	selectYear: DatepickerSelectOption[] = [];
@@ -43,38 +46,38 @@ export class DatepickerComponent implements OnInit {
 	selectMonth: DatepickerSelectOption[] = [];
 
 	/** 輸入日期 */
-	sdate: string;
+	sdate = '';
 
 	/** 最小日期 */
-	min: string;
+	min = '';
 
 	/** 最大日期 */
-	max: string;
+	max = '';
 
 	/** 今天日期 */
-	now: Date = new Date();
+	now = new Date();
 
 	/** 檢視日期 */
-	date: Date = new Date();
+	date = new Date();
 
 	/** 最小日期 */
-	dateMin: Date;
+	dateMin: Date | null = new Date();
 
 	/** 最大日期 */
-	dateMax: Date;
+	dateMax: Date | null = new Date();
 
 	/** 星期簡寫 */
 	week = DATEPICKER_WEEK_ABBR;
 
 	/** 月曆浮動位置 */
-	top: number;
-	left: number;
+	top = 0;
+	left = 0;
 
 	/** 輸入框資訊 */
-	input: HTMLInputElement;
+	input: HTMLInputElement | null = null;
 
 	/** 回調函式 */
-	action: EventEmitter<string>;
+	action = new EventEmitter<string>();
 
 	constructor(
 		private router: Router,
@@ -168,31 +171,29 @@ export class DatepickerComponent implements OnInit {
 				this.top = rect.top + rect.height + window.pageYOffset;
 			}
 
-		// 如果是桌機版
-		if ( window.innerWidth > MOBILE_WIDTH ) {
+			// 如果是桌機版
+			if ( window.innerWidth > MOBILE_WIDTH ) {
 
-			// 預設值
-			this.left = rect.left;
+				// 預設值
+				this.left = rect.left;
 
-			// 如果有載入資料後寬度的 HTML
-			if ( panel ) {
+				// 如果有載入資料後寬度的 HTML
+				if ( panel ) {
 
-				const width = panel.getBoundingClientRect().width;
+					const width = panel.getBoundingClientRect().width;
 
-				// 如果超出顯示範圍
-				if ( rect.left + width > window.innerWidth ) {
-					// 減去自己的寬度
-					this.left = rect.left - width + rect.width;
+					// 如果超出顯示範圍
+					if ( rect.left + width > window.innerWidth ) {
+						// 減去自己的寬度
+						this.left = rect.left - width + rect.width;
+					}
+
 				}
 
+			} else {
+				// 手機版不使用 X 定位
+				this.left = 0;
 			}
-
-		} else {
-			// 手機版不使用 X 定位
-			this.left = null;
-		}
-
-
 
 		}
 	}
@@ -217,7 +218,7 @@ export class DatepickerComponent implements OnInit {
 			this.update();
 
 			// 傳送當前日期到輸入框
-			this.ngModel.update.emit(this.sdate);
+			this.ngModel?.update.emit(this.sdate);
 
 			// 觸發回調
 			this.action.emit(this.sdate);
@@ -272,11 +273,11 @@ export class DatepickerComponent implements OnInit {
 	 */
 	clear() {
 		// 清空當前日期
-		this.sdate = null;
+		this.sdate = '';
 		// 清空輸入框日期
-		this.ngModel.update.emit(null);
+		this.ngModel?.update.emit('');
 		// 回調函式
-		this.action.emit(null);
+		this.action.emit('');
 		// 關閉月曆
 		this.show = false;
 	}
@@ -300,7 +301,7 @@ export class DatepickerComponent implements OnInit {
 		this.selectYear = this.datepicker.yearRange();
 
 		// 預先生成小月曆
-		this.seeDate = this.datepicker.update(null, this.date);
+		this.seeDate = this.datepicker.update([], this.date);
 
 		// 當小月曆傳入資料的時候
 		this.datepicker.run.subscribe( data => {

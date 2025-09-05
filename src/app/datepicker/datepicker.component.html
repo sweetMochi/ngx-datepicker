@@ -13,27 +13,21 @@
 			><div class="datepicker-panel-wrap">
 				<div class="datepicker-panel-header">
 					<div class="datepicker-select">
-						<select
-							[(ngModel)]="year"
-							(change)="changeYear()"
-							><option
-								*ngFor="let option of selectYear"
-								[value]="option.val"
-								[textContent]="option.title"
-							></option>
-						</select><b></b>
+						<select [(ngModel)]="year" (change)="changeYear()">
+							@for (option of selectYear; track $index) {
+								<option [value]="option.val" [textContent]="option.title"></option>
+							}
+						</select>
+						<b></b>
 						<span [textContent]="year"></span>
 					</div>
 					<div class="datepicker-select">
-						<select
-							[(ngModel)]="month"
-							(change)="changeMonth()"
-							><option
-								*ngFor="let option of selectMonth"
-								[value]="option.val"
-								[textContent]="option.title"
-							></option>
-						</select><b></b>
+						<select [(ngModel)]="month" (change)="changeMonth()">
+							@for (option of selectMonth; track $index) {
+								<option [value]="option.val" [textContent]="option.title"></option>
+							}
+						</select>
+						<b></b>
 						<span [textContent]="month + 1"></span>
 					</div>
 					<button class="datepicker-select" (click)="clear()">
@@ -54,23 +48,27 @@
 					<table>
 						<thead>
 							<tr>
-								<th *ngFor="let th of week" [textContent]="th"></th>
+								@for (th of week; track $index) {
+									<th [textContent]="th"></th>
+								}
 							</tr>
 						</thead>
 						<tbody>
-							<ng-container
-								*ngFor="let td of seeDate; let i = index"
-								><tr *ngIf="i % 7 === 0">
-									<td
-										*ngFor="let n of [0,1,2,3,4,5,6]"
-										[class.datepicker-date-out]="seeDate[ i + n ].out"
-										[class.datepicker-date-off]="seeDate[ i + n ].off"
-										[class.datepicker-date-sdate]="seeDate[ i + n ].sdate"
-										[textContent]="seeDate[ i + n ].d"
-										(click)="pick(seeDate[ i + n ].off ? null : seeDate[ i + n ].date)"
-									></td>
-								</tr>
-							</ng-container>
+							@for (td of seeDate; track td; let i = $index) {
+								@if (i % 7 === 0) {
+									<tr>
+										@for (n of [0,1,2,3,4,5,6]; track $index) {
+											<td
+												[class.datepicker-date-out]="seeDate[ i + n ].out"
+												[class.datepicker-date-off]="seeDate[ i + n ].off"
+												[class.datepicker-date-sdate]="seeDate[ i + n ].sdate"
+												[textContent]="seeDate[ i + n ].d"
+												(click)="pick(seeDate[ i + n ].off ? '' : seeDate[ i + n ].date)"
+											></td>
+										}
+									</tr>
+								}
+							}
 						<tbody>
 					</table>
 				</div>

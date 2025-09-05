@@ -1,16 +1,24 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DatepickerComponent } from './datepicker/datepicker.component';
+import { DatepickerDirective } from './datepicker/datepicker.directive';
 
 @Component({
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	styleUrls: ['./app.component.less']
+    selector: 'app-root',
+    imports: [
+        FormsModule,
+        DatepickerComponent,
+        DatepickerDirective
+    ],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.less'
 })
 export class AppComponent {
-	@ViewChild('topLeft') topLeft: ElementRef;
 
-	date: string;
-	dateTopLeft: string;
-	dateTopRight: string;
-	dateBottomLeft: string;
-	dateBottomRight: string;
+    date = '';
+    dateTopLeft = '';
+    dateTopRight = '';
+    dateBottomLeft = '';
+    dateBottomRight = '';
+
 }

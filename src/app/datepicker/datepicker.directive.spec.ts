@@ -1,12 +1,12 @@
 import { DatepickerDirective } from './datepicker.directive';
 import { Component, DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync,  } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { DatepickerBoot } from './datepicker';
-import { DatepickerComponent } from './datepicker.component';
 
 @Component({
+	standalone: false,
 	template: `
 		<form>
 			<input type="date" name="testNative" [(ngModel)]="testNative">
@@ -42,10 +42,10 @@ describe('DatepickerDirective', () => {
 	let input: HTMLInputElement;
 
 	beforeEach(() => {
+
 		fixture = TestBed.configureTestingModule({
-			imports: [ FormsModule ],
+			imports: [ FormsModule, DatepickerDirective ],
 			declarations: [
-				DatepickerDirective,
 				TestComponent
 			]
 		})
@@ -71,8 +71,8 @@ describe('DatepickerDirective', () => {
 	it('initDate function test', () => {
 		const date = '2020-06-06';
 		directive = debug[0].injector.get(DatepickerDirective);
-		expect(directive.initDate('ASDDSFER')).toBeNull();
-		expect(directive.initDate('20200202')).toBeNull();
+		expect(directive.initDate('ASDDSFER')).toBe('');
+		expect(directive.initDate('20200202')).toBe('');
 		expect(directive.initDate(date)).toEqual(date);
 	});
 
@@ -95,7 +95,7 @@ describe('DatepickerDirective', () => {
 	});
 
 
-	it('there is no readonly attribute which is not binding datepicker directive', async(() => {
+	it('there is no readonly attribute which is not binding datepicker directive', waitForAsync(() => {
 		const target = fixture.debugElement.query(By.css('[name="testNative"]'));
 		input = target.nativeElement as HTMLInputElement;
 		expect(input.getAttribute('readonly')).toBeNull();
@@ -105,7 +105,7 @@ describe('DatepickerDirective', () => {
 	describe('focus on input', () => {
 		let initSpy: jasmine.Spy;
 
-		it('should trigger datepicker init', async(() => {
+		it('should trigger datepicker init', waitForAsync(() => {
 			directive = debug[0].injector.get(DatepickerDirective);
 			// 偵測初始化事件
 			// @ts-ignore
@@ -129,7 +129,7 @@ describe('DatepickerDirective', () => {
 		}));
 
 
-		it('invalid max & min date should not pass max & min value to datepicker', async(() => {
+		it('invalid max & min date should not pass max & min value to datepicker', waitForAsync(() => {
 			input = debug[1].nativeElement as HTMLInputElement;
 			directive = debug[1].injector.get(DatepickerDirective);
 			// 偵測初始化事件
@@ -139,8 +139,8 @@ describe('DatepickerDirective', () => {
 			input.dispatchEvent(new Event('focus'));
 			// 等待 ngModel 生成
 			fixture.whenStable().then(() => {
-				expect(directive.min).toBeNull();
-				expect(directive.max).toBeNull();
+				expect(directive.min).toBe('');
+				expect(directive.max).toBe('');
 				expect(initSpy).toHaveBeenCalledWith(new DatepickerBoot(
 					input.name,
 					input,
@@ -154,7 +154,7 @@ describe('DatepickerDirective', () => {
 		}));
 
 
-		it('invalid input type should not init datepicker', async(() => {
+		it('invalid input type should not init datepicker', waitForAsync(() => {
 			input = debug[3].nativeElement as HTMLInputElement;
 			directive = debug[3].injector.get(DatepickerDirective);
 			// 偵測初始化事件
@@ -169,7 +169,7 @@ describe('DatepickerDirective', () => {
 		}));
 
 
-		it('invalid date range should not init datepicker', async(() => {
+		it('invalid date range should not init datepicker', waitForAsync(() => {
 			input = debug[2].nativeElement as HTMLInputElement;
 			directive = debug[2].injector.get(DatepickerDirective);
 			// 偵測初始化事件

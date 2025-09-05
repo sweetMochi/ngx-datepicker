@@ -3,9 +3,9 @@ import { NgModel } from '@angular/forms';
 
 
 // 功能資源
-import { DateService } from 'src/app/@sup/date.service';
 import { DatepickerBoot } from './datepicker';
 import { DatepickerService } from './datepicker.service';
+import { DateService } from '../@sup/date.service';
 
 
 /**
@@ -17,16 +17,16 @@ import { DatepickerService } from './datepicker.service';
 export class DatepickerDirective {
 
 	/** 欄位名稱 */
-	@Input() name: string;
+	@Input() name = '';
 
 	/** input type */
-	@Input() type: string;
+	@Input() type = '';
 
 	/** 最小日期 */
-	@Input('appDatepickerMin') min: string;
+	@Input('appDatepickerMin') min = '';
 
 	/** 最大日期 */
-	@Input('appDatepickerMax') max: string;
+	@Input('appDatepickerMax') max = '';
 
 	/** 回調事件 */
 	@Output() action = new EventEmitter<string>();
@@ -47,9 +47,9 @@ export class DatepickerDirective {
 	 */
 	initDate(date: string): string {
 		if ( !date ) {
-			return null;
+			return '';
 		}
-		return this.date.isDate(date) ? date : null;
+		return this.date.isDate(date) ? date : '';
 	}
 
 

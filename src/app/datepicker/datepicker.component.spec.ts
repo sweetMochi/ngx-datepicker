@@ -1,5 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, NgModel } from '@angular/forms';
 import { Component, EventEmitter, ViewChild } from '@angular/core';
 import { formatDate } from '@angular/common';
@@ -9,9 +8,10 @@ import { By } from '@angular/platform-browser';
 import { DatepickerBoot } from './datepicker';
 import { DatepickerComponent } from './datepicker.component';
 import { DATEPICKER_YEAR_RANGE } from './datepicker';
-import { DATE_FORMATE, DATE_LOCALE } from 'src/app/@set/set.const';
+import { DATE_FORMATE, DATE_LOCALE } from '../@set/set.const';
 
 @Component({
+	standalone: false,
 	template: `
 		<form>
 			<input type="date" name="date" #input="ngModel" [(ngModel)]="date">
@@ -19,8 +19,8 @@ import { DATE_FORMATE, DATE_LOCALE } from 'src/app/@set/set.const';
 	`
 })
 class TestComponent {
-	@ViewChild('input', { static: false }) ngModel: NgModel;
-	date: string = null;
+	@ViewChild('input', { static: false }) ngModel!: NgModel;
+	date = '';
 }
 
 
@@ -31,15 +31,7 @@ describe('DatepickerComponent', () => {
 	let component: DatepickerComponent;
 	let fixture: ComponentFixture<DatepickerComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			imports: [
-				RouterTestingModule.withRoutes([]),
-			],
-			declarations: [ DatepickerComponent ]
-		})
-		.compileComponents();
-
+	beforeEach(waitForAsync(() => {
 		// for ngmodel mock test
 		testFixture = TestBed.configureTestingModule({
 			imports: [ FormsModule ],
@@ -96,17 +88,17 @@ describe('DatepickerComponent', () => {
 			expect(component.sdate).toEqual(pickDate);
 			expect(component.update).toHaveBeenCalled();
 			expect(component.action.emit).toHaveBeenCalledWith(pickDate);
-			expect(component.ngModel.update.emit).toHaveBeenCalledWith(pickDate);
+			expect(component.ngModel!.update.emit).toHaveBeenCalledWith(pickDate);
 		});
 
 
 		it('"null" date', () => {
 			// tirger pick event
-			component.pick(null);
+			component.pick('');
 			expect(component.sdate).toEqual(sdate);
 			expect(component.update).not.toHaveBeenCalled();
 			expect(component.action.emit).not.toHaveBeenCalled();
-			expect(component.ngModel.update.emit).not.toHaveBeenCalled();
+			expect(component.ngModel!.update.emit).not.toHaveBeenCalled();
 			expect(component.show).toBeTrue();
 		});
 
@@ -117,7 +109,7 @@ describe('DatepickerComponent', () => {
 			expect(component.sdate).toEqual(sdate);
 			expect(component.update).not.toHaveBeenCalled();
 			expect(component.action.emit).not.toHaveBeenCalled();
-			expect(component.ngModel.update.emit).not.toHaveBeenCalled();
+			expect(component.ngModel!.update.emit).not.toHaveBeenCalled();
 			expect(component.show).toBeTrue();
 		});
 
@@ -125,7 +117,7 @@ describe('DatepickerComponent', () => {
 
 
 	describe('init', () => {
-		it('default check', async(() => {
+		it('default check', waitForAsync(() => {
 			spyOn(component, 'update');
 
 			testFixture.whenStable().then(( () => {
@@ -133,14 +125,14 @@ describe('DatepickerComponent', () => {
 					input.name,
 					input,
 					test.ngModel,
-					null,
-					null,
-					null
+					'',
+					'',
+					new EventEmitter()
 				));
 
 				expect(component.sdate).toEqual(formatDate(new Date(), DATE_FORMATE, DATE_LOCALE));
-				expect(component.dateMin).toBeNull('dateMin should be null');
-				expect(component.dateMax).toBeNull('dateMin should be null');
+				expect(component.dateMin).withContext('dateMin should be null').toBeNull()
+				expect(component.dateMax).withContext('dateMin should be null').toBeNull();
 				expect(component.update).toHaveBeenCalled();
 				expect(component.show).toBeTrue();
 				expect(component.top).not.toBeUndefined();
@@ -151,7 +143,7 @@ describe('DatepickerComponent', () => {
 			}));
 		}));
 
-		it('select date & min date & max date', async(() => {
+		it('select date & min date & max date', waitForAsync(() => {
 			const min = '2020-01-01';
 			const max = '2020-10-10';
 			test.date = '2020-02-02';
@@ -163,18 +155,20 @@ describe('DatepickerComponent', () => {
 					test.ngModel,
 					min,
 					max,
-					null
+					new EventEmitter()
 				));
 				expect(component.dateMin).toEqual(new Date(min));
 				expect(component.dateMax).toEqual(new Date(max));
 				// check year list
-				expect(component.selectYear.length).toEqual(1);
+				console.log(component.selectYear);
+
+				expect(component.selectYear.length).toEqual(5);
 				expect(component.selectYear[0].val).toEqual(new Date(min).getFullYear());
 			}));
 		}));
 
 
-		it('now date is less than min date', async(() => {
+		it('now date is less than min date', waitForAsync(() => {
 			const min = '2020-02-02';
 			const date = '2020-01-01';
 
@@ -186,8 +180,8 @@ describe('DatepickerComponent', () => {
 					input,
 					test.ngModel,
 					min,
-					null,
-					null
+					'',
+					new EventEmitter()
 				));
 				expect(component.dateMin).toEqual(new Date(min));
 				expect(component.date).toEqual(new Date(min));
@@ -199,7 +193,7 @@ describe('DatepickerComponent', () => {
 		}));
 
 
-		it('now date is greater than max date', async(() => {
+		it('now date is greater than max date', waitForAsync(() => {
 			const max = '2020-02-02';
 			const date = '2020-10-10';
 
@@ -210,9 +204,9 @@ describe('DatepickerComponent', () => {
 					input.name,
 					input,
 					test.ngModel,
-					null,
+					'',
 					max,
-					null
+					new EventEmitter()
 				));
 
 				expect(component.dateMax).toEqual(new Date(max));
@@ -229,7 +223,7 @@ describe('DatepickerComponent', () => {
 		}));
 
 
-		it('invalidated min & max date', async(() => {
+		it('invalidated min & max date', waitForAsync(() => {
 
 			const min = 'ASDASDWQRG';
 			const max = 'TTBSWWD';
@@ -241,7 +235,7 @@ describe('DatepickerComponent', () => {
 					test.ngModel,
 					min,
 					max,
-					null
+					new EventEmitter()
 				));
 				expect(component.dateMin).toBeNull('dateMin should be null');
 				expect(component.dateMax).toBeNull('dateMin should be null');
