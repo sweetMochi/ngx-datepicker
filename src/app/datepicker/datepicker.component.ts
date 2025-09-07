@@ -6,8 +6,9 @@ import { FormsModule, NgModel } from '@angular/forms';
 import { DatepickerService } from './datepicker.service';
 import { DatepickerBoot, DatepickerSelectOption, DatepickerUnit } from './datepicker';
 import { DATEPICKER_WEEK_ABBR } from './datepicker';
-import { MOBILE_WIDTH } from '../@set/set.const';
+import { DATE_FORMATE, DATE_LOCALE, MOBILE_WIDTH } from '../@set/set.const';
 import { DateService } from '../@sup/date.service';
+import { formatDate } from '@angular/common';
 
 
 /**
@@ -102,7 +103,7 @@ export class DatepickerComponent implements OnInit {
 
 		// 指定當前日期
 		// 若沒有日期，則顯示當前日期
-		this.sdate = data.date.value ? data.date.value : this.now.toJSON().slice(0, 10);
+		this.sdate = data.date.value ? data.date.value : formatDate(new Date(), DATE_FORMATE, DATE_LOCALE);
 
 		// 如果有設定最小日期
 		this.dateMin = this.dateService.isDate(data.min) ? new Date(data.min) : null;

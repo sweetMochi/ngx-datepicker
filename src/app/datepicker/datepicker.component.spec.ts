@@ -130,7 +130,7 @@ describe('DatepickerComponent', () => {
 					new EventEmitter()
 				));
 
-				expect(component.sdate).toEqual(formatDate(new Date(), DATE_FORMATE, DATE_LOCALE));
+				expect(component.sdate).withContext('sdate should be equal to formatted current date').toEqual(formatDate(new Date(), DATE_FORMATE, DATE_LOCALE));
 				expect(component.dateMin).withContext('dateMin should be null').toBeNull()
 				expect(component.dateMax).withContext('dateMin should be null').toBeNull();
 				expect(component.update).toHaveBeenCalled();
